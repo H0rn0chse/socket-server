@@ -1,5 +1,4 @@
 import path from "path";
-import { __root } from "./src/utils.js";
 
 // This adapter could be reimplemented
 import { Adapter } from "./src/DefaultAdapter.js";
@@ -37,6 +36,7 @@ export const AdapterBase = _AdapterBase;
  * @param {number} [options.port] default=8080
  * @param {string} [options.host] default="localhost"
  * @param {string[][]} [options.publicPaths] default=["/client", "/"]
+ * @param {string} [options.root] If root is set it gets applied to the absolute part of the publicPaths
  */
 export function startServer (options = {}) {
     if (adapter) {
@@ -49,9 +49,12 @@ export function startServer (options = {}) {
         host = options.host
     }
     if (Array.isArray(options.publicPaths)) {
-        publicPaths = options.publicPaths.map((parts) => {
-            return [path.join(__root, parts[0]), parts[1]]
-        });
+        publicPaths = options.publicPaths
+    }
+    if (typeof options.root === "string") {
+        publicPaths = publicPaths.map((parts) => {
+            return [path.join(options.root, parts[0]), parts[1]];
+        })
     }
     adapter = new Adapter(port, host, publicPaths);
     adapter.startServer();

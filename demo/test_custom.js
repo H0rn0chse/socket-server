@@ -3,9 +3,9 @@ import { fileURLToPath } from "url";
 
 import { registerSocketHandler, startCustomServer, send, registerXhrHandler, DefaultAdapter } from "../index.js";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-export const __root = path.join(__dirname, "../");
+const filename = fileURLToPath(import.meta.url);
+const dirname = path.dirname(filename);
+const root = path.join(dirname, "../");
 
 class CustomAdapter extends DefaultAdapter {
     handleSocketOpen (ws) {
@@ -16,7 +16,7 @@ class CustomAdapter extends DefaultAdapter {
     }
 }
 
-const adapter = new CustomAdapter(3000, "localhost", [[path.join(__root, "/demo/client"), "/"]]);
+const adapter = new CustomAdapter(3000, "localhost", [[path.join(root, "/demo/client"), "/"]]);
 
 startCustomServer(adapter);
 
