@@ -1,0 +1,38 @@
+{
+  "name": "socket-server",
+  "version": "1.0.0",
+  "description": "Extends express.js and ws server with some utilities",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "startTest": "node demo/test.js",
+    "startCustomTest": "node demo/test_custom.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/H0rn0chse/socket-server.git"
+  },
+  "keywords": [
+    "websocket",
+    "socket",
+    "express",
+    "expressjs",
+    "ws"
+  ],
+  "author": {
+    "name": "h0rn0chse",
+    "email": "h0rn0chse@gmx.de"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/H0rn0chse/socket-server/issues"
+  },
+  "homepage": "https://github.com/H0rn0chse/socket-server#readme",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "ws": "^8.3.0"
+  }
+}
