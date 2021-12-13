@@ -3,13 +3,23 @@ import path from "path";
 // This adapter could be reimplemented
 import { Adapter } from "./src/DefaultAdapter.js";
 import { AdapterBase as _AdapterBase } from "./src/AdapterBase.js";
+import { projectRoot, root as debugRoot } from "./src/globals.js"
 
 let port = parseInt(process.env.PORT, 10) || 8080;
 let host = process.env.PORT ? "0.0.0.0" : "localhost";
+const debug = !!process.env.npm_config_debug;
 
 let publicPaths = [
     ["/client", "/"]
 ];
+let root;
+
+if (!debug) {
+    root = projectRoot;
+} else {
+    root = debugRoot;
+}
+
 
 let adapter;
 
@@ -52,10 +62,14 @@ export function startServer (options = {}) {
         publicPaths = options.publicPaths
     }
     if (typeof options.root === "string") {
-        publicPaths = publicPaths.map((parts) => {
-            return [path.join(options.root, parts[0]), parts[1]];
-        })
+        root = options.root;
     }
+
+    publicPaths = publicPaths.map((parts) => {
+        return [path.join(root, parts[0]), parts[1]];
+    });
+    console.log(publicPaths)
+
     adapter = new Adapter(port, host, publicPaths);
     adapter.startServer();
 }
