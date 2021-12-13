@@ -1,7 +1,7 @@
 import path from "path";
 import { fileURLToPath } from "url";
 
-import { registerSocketHandler, startCustomServer, send, registerXhrHandler, DefaultAdapter } from "../index.js";
+import { unregisterSocketHandler, registerSocketHandler, startCustomServer, send, registerXhrHandler, DefaultAdapter } from "../index.js";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
