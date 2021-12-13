@@ -6,7 +6,9 @@
   "type": "module",
   "scripts": {
     "startTest": "node demo/test.js",
-    "startCustomTest": "node demo/test_custom.js"
+    "test": "npm run startTest --debug",
+    "startCustomTest": "node demo/test_custom.js",
+    "customTest": "npm run startCustomTest --debug"
   },
   "repository": {
     "type": "git",
