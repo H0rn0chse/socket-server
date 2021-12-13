@@ -65,9 +65,11 @@ export function startServer (options = {}) {
         root = options.root;
     }
 
-    publicPaths = publicPaths.map((parts) => {
-        return [path.join(root, parts[0]), parts[1]];
-    });
+    if (options.root !== false) {
+        publicPaths = publicPaths.map((parts) => {
+            return [path.join(root, parts[0]), parts[1]];
+        });
+    }
 
     adapter = new Adapter(port, host, publicPaths);
     adapter.startServer();
