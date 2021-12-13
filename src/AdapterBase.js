@@ -25,20 +25,20 @@ export class AdapterBase {
         return id;
     }
 
-    registerSocketHandler (channel, callback, scope) {
-        this.socketHandler.set(channel, callback, scope);
+    registerSocketHandler (channel, socketCallback, scope) {
+        this.socketHandler.set(channel, socketCallback, scope);
     }
 
-    unregisterSocketHandler (channel, callback, scope) {
-        this.socketHandler.delete(channel, callback, scope);
+    unregisterSocketHandler (channel, socketCallback, scope) {
+        this.socketHandler.delete(channel, socketCallback, scope);
     }
 
-    registerXhrHandler (method, path, callback, scope) {
-        this.xhrHandler.set(method, path, callback, scope);
+    registerXhrHandler (method, path, xhrCallback, scope) {
+        this.xhrHandler.set(method, path, xhrCallback, scope);
     }
 
-    unregisterXhrHandler (method, path, callback, scope) {
-        this.xhrHandler.delete(method, path, callback, scope);
+    unregisterXhrHandler (method, path, xhrCallback, scope) {
+        this.xhrHandler.delete(method, path, xhrCallback, scope);
     }
 
     handleSocketOpen (ws) {
@@ -62,16 +62,16 @@ export class AdapterBase {
     handleSocketMessage (ws, data) {
         const message = this.parseSocketMessage(data);
 
-        this.socketHandler.forEach((channel, callback, scope) => {
+        this.socketHandler.forEach((channel, socketCallback, scope) => {
             if (!message || typeof message !== "object" || message.channel !== channel) {
                 return;
             }
 
             try {
                 if (scope) {
-                    callback.call(scope, ws, message.data, ws.id);
+                    socketCallback.call(scope, ws, message.data, ws.id);
                 } else {
-                    callback(ws, message.data, ws.id);
+                    socketCallback(ws, message.data, ws.id);
                 }
             } catch (err) {
                 globalThis.console.error(err);
@@ -81,7 +81,7 @@ export class AdapterBase {
 
     async handleXhr (req, res, next) {
         const token = req.get("Authorization") || null;
-        const handlerPromises = this.xhrHandler.map(async (method, path, callback, scope) => {
+        const handlerPromises = this.xhrHandler.map(async (method, path, xhrCallback, scope) => {
             if (req.method !== method.toUpperCase()) {
                 return;
             }
@@ -91,9 +91,9 @@ export class AdapterBase {
 
             try {
                 if (scope) {
-                    await callback.call(scope, req, res, token);
+                    await xhrCallback.call(scope, req, res, token);
                 } else {
-                    await callback(req, res, token);
+                    await xhrCallback(req, res, token);
                 }
             } catch (err) {
                 globalThis.console.error(err);

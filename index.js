@@ -90,56 +90,56 @@ export function startCustomServer (customAdapter) {
 /**
  * Registers a handler to a specific channel
  * @param {string} channel
- * @param {socketCallback} callback
+ * @param {socketCallback} socketCallback
  * @param {object} [scope]
  * @returns
  */
-export function registerSocketHandler (channel, callback, scope=null) {
+export function registerSocketHandler (channel, socketCallback, scope=null) {
     if (!adapter) {
         return new Error("'registerSocketHandler' was called before the adapter was set");
     }
-    adapter.registerSocketHandler(channel, callback, scope);
+    adapter.registerSocketHandler(channel, socketCallback, scope);
 }
 
 /**
  * Unregisters a handler to a specific channel
  * @param {string} channel
- * @param {socketCallback} callback
+ * @param {socketCallback} socketCallback
  * @param {object} [scope]
  */
- export function unregisterSocketHandler (channel, callback, scope=null) {
+ export function unregisterSocketHandler (channel, socketCallback, scope=null) {
     if (!adapter) {
         return new Error("'unregisterSocketHandler' was called before the adapter was set");
     }
-    adapter.unregisterSocketHandler(channel, callback, scope);
+    adapter.unregisterSocketHandler(channel, socketCallback, scope);
 }
 
 /**
  * Registers a handler to a specific XMLHttpRequest
  * @param {string} method The method of the XMLHttpRequest
  * @param {string} path The path gets matched with startsWith
- * @param {xhrCallback} callback
+ * @param {xhrCallback} xhrCallback
  * @param {object} [scope]
  */
-export function registerXhrHandler (method, path, callback, scope=null) {
+export function registerXhrHandler (method, path, xhrCallback, scope=null) {
     if (!adapter) {
         return new Error("'registerXhrHandler' was called before the adapter was set");
     }
-    adapter.registerXhrHandler(method, path, callback, scope);
+    adapter.registerXhrHandler(method, path, xhrCallback, scope);
 }
 
 /**
  * Unregisters a handler to a specific XMLHttpRequest
  * @param {string} method The method of the XMLHttpRequest
  * @param {string} path The path gets matched with startsWith
- * @param {xhrCallback} callback
+ * @param {xhrCallback} xhrCallback
  * @param {object} [scope]
  */
- export function unregisterXhrHandler (method, path, callback, scope=null) {
+ export function unregisterXhrHandler (method, path, xhrCallback, scope=null) {
     if (!adapter) {
         return new Error("'unregisterXhrHandler' was called before the adapter was set");
     }
-    adapter.unregisterXhrHandler(method, path, callback, scope);
+    adapter.unregisterXhrHandler(method, path, xhrCallback, scope);
 }
 
 /**
