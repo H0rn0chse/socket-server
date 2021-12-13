@@ -3,7 +3,7 @@ import path from "path";
 // This adapter could be reimplemented
 import { Adapter } from "./src/DefaultAdapter.js";
 import { AdapterBase as _AdapterBase } from "./src/AdapterBase.js";
-import { projectRoot, root as debugRoot } from "./src/globals.js"
+import { projectRoot, root as debugRoot } from "./src/utils.js"
 
 let port = parseInt(process.env.PORT, 10) || 8080;
 let host = process.env.PORT ? "0.0.0.0" : "localhost";
