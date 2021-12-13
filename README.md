@@ -30,7 +30,7 @@ registerSocketHandler("ping", (ws, data, uuid) => {
 });
 ```
 
-For more examples see the [documentation](https://github.com/H0rn0chse/socket-server/wiki/Documentation) and the demo files [test.js](./demo/test.js) and [test_custom.js](./demo/test_custom.js).
+For more examples see the [documentation](https://github.com/H0rn0chse/socket-server/wiki) and the demo files [test.js](./demo/test.js) and [test_custom.js](./demo/test_custom.js).
 
 ## Libraries
  * WebSockets [github.com/websockets/ws](https://github.com/websockets/ws)
