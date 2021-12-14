@@ -8,7 +8,8 @@ startServer({
     port: 3000,
     publicPaths: [
         ["/demo/client_handler", "/"]
-    ]
+    ],
+    useClientHandler: true
 });
 
 registerXhrHandler("get", "/data/blob", (req, res, token) => {

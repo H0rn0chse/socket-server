@@ -13,7 +13,7 @@ const debug = !!process.env.npm_config_debug;
 let publicPaths = [
     ["/client", "/"]
 ];
-let useClientHandler = true;
+let useClientHandler = false;
 let root;
 
 if (!debug) {
