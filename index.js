@@ -4,7 +4,7 @@ import path from "path";
 import { Adapter } from "./src/DefaultAdapter.js";
 import { AdapterBase as _AdapterBase } from "./src/AdapterBase.js";
 import { TopicManager as _TopicManager } from "./src/TopicManager.js";
-import { projectRoot, root as debugRoot } from "./src/utils.js"
+import { projectRoot, root as debugRoot } from "./src/root.js"
 
 let port = parseInt(process.env.PORT, 10) || 8080;
 let host = process.env.PORT ? "0.0.0.0" : "localhost";
@@ -13,6 +13,7 @@ const debug = !!process.env.npm_config_debug;
 let publicPaths = [
     ["/client", "/"]
 ];
+let useClientHandler = true;
 let root;
 
 if (!debug) {
@@ -49,6 +50,7 @@ export const TopicManager = _TopicManager;
  * @param {string} [options.host] default="localhost"
  * @param {string[][]} [options.publicPaths] default=["/client", "/"]
  * @param {string} [options.root] If root is set it gets applied to the absolute part of the publicPaths
+ * @param {number} [options.useClientHandler] default=true
  */
 export function startServer (options = {}) {
     if (adapter) {
@@ -65,6 +67,14 @@ export function startServer (options = {}) {
     }
     if (typeof options.root === "string") {
         root = options.root;
+    }
+    if (typeof options.useClientHandler === "boolean") {
+        useClientHandler = options.useClientHandler;
+    }
+
+    if (useClientHandler) {
+        publicPaths.push(["/src/client", "/socket-server"]);
+        publicPaths.push(["/src/shared", "/socket-server"]);
     }
 
     if (options.root !== false) {

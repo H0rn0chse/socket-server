@@ -1,7 +1,7 @@
 import { error } from "console";
 import crypto from "crypto";
 
-import { HandlerMap } from "./HandlerMap.js";
+import { HandlerMap } from "./shared/HandlerMap.js";
 
 /**
  * @callback socketCallback
