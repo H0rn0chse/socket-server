@@ -34,7 +34,7 @@ For more examples see the [documentation](https://github.com/H0rn0chse/socket-se
 
 ### Limitations
 This module can only be used with esm.
-```json
+```javascript
 // package.json
 {
     "type": "module"
