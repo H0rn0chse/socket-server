@@ -3,6 +3,7 @@ import path from "path";
 // This adapter could be reimplemented
 import { Adapter } from "./src/DefaultAdapter.js";
 import { AdapterBase as _AdapterBase } from "./src/AdapterBase.js";
+import { TopicManager as _TopicManager } from "./src/TopicManager.js";
 import { projectRoot, root as debugRoot } from "./src/utils.js"
 
 let port = parseInt(process.env.PORT, 10) || 8080;
@@ -25,6 +26,7 @@ let adapter;
 
 export const DefaultAdapter = Adapter;
 export const AdapterBase = _AdapterBase;
+export const TopicManager = _TopicManager;
 
 /**
  * @callback socketCallback
@@ -35,8 +37,8 @@ export const AdapterBase = _AdapterBase;
 
 /**
  * @callback xhrCallback
- * @param {Request} req The Request returned by express
- * @param {Response} res The Response returned by express
+ * @param {Express.Request} req The Request returned by express
+ * @param {Express.Response} res The Response returned by express
  * @param {string} token The access token provided via the headers
  */
 
@@ -92,7 +94,6 @@ export function startCustomServer (customAdapter) {
  * @param {string} channel
  * @param {socketCallback} socketCallback
  * @param {object} [scope]
- * @returns
  */
 export function registerSocketHandler (channel, socketCallback, scope=null) {
     if (!adapter) {

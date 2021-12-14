@@ -1,6 +1,7 @@
 import { createServer } from "http";
 import express from "express";
 import { WebSocketServer } from "ws";
+import { log, error } from "console";
 
 import { AdapterBase } from "./AdapterBase.js";
 import { TopicManager } from "./TopicManager.js";
@@ -20,6 +21,11 @@ export class Adapter extends AdapterBase {
         this.topics = new TopicManager();
     }
 
+    /**
+     * Parses the data to an object.
+     * @param {string|Buffer} data The data recieved by the socket 'message' event
+     * @returns {object} The parsed data
+     */
     parseSocketMessage (data) {
         if (Buffer.isBuffer(data)) {
             const buffer = Buffer.from(data);
@@ -34,11 +40,17 @@ export class Adapter extends AdapterBase {
             const string = data;
             oResult = JSON.parse(string);
         } catch (err) {
-            globalThis.console.log(err);
+            error(err);
         }
         return oResult;
     }
 
+    /**
+     * Sends a message to a specific WebSocket
+     * @param {WebSocket} ws
+     * @param {string} channel
+     * @param {Object} data
+     */
     send (ws, channel, data) {
         const message = JSON.stringify({
             channel,
@@ -47,37 +59,59 @@ export class Adapter extends AdapterBase {
         ws.send(message);
     }
 
+    /**
+     * Publishes a message to all websockets subscribed to a message
+     * @param {string} topic
+     * @param {string} channel
+     * @param {object} data
+     */
     publish (topic, channel, data) {
-        const message = JSON.stringify({
-            channel,
-            data,
-        });
-        this.topics.publish(topic, message);
+        this.topics.publish(topic, channel, data);
     }
 
+    /**
+     * Subscribes a WebSocket to a topic
+     * @param {WebSocket} ws
+     * @param {string} topic
+     */
     subscribe (ws, topic) {
         try {
             this.topics.subscribe(ws, topic);
         } catch (err) {
-            globalThis.console.error(`subscribe failed: ${topic}`);
+            error(`subscribe failed: ${topic}`);
         }
     }
 
+    /**
+     * Unsubscribes a WebSocket to a topic
+     * @param {WebSocket} ws
+     * @param {string} topic
+     */
     unsubscribe (ws, topic) {
         try {
             this.topics.unsubscribe(ws, topic);
         } catch (err) {
-            globalThis.console.error(`unsubscribe failed: ${topic}`);
+            error(`unsubscribe failed: ${topic}`);
         }
     }
 
+    /**
+     * Creates a mock WebSocket since the original
+     * socket was already destroyed and unsusbscribes
+     * from all subscribed topics
+     * @param {string} socketId
+     */
     handleSocketClose (socketId) {
         const ws = {
             id: socketId,
         };
+        this.topics.unsubscribeAll(ws);
         super.handleSocketClose(ws);
     }
 
+    /**
+     * Starts the server and binds to the WebSocket and xhr events
+     */
     startServer () {
         this.publicPaths.forEach((path) => {
             const [absolutePath, relativePath] = path;
@@ -98,7 +132,7 @@ export class Adapter extends AdapterBase {
         });
 
         this.httpServer.listen(this.port, this.host, () => {
-            globalThis.console.log(`Listening to http://${this.host}:${this.port}`);
+            log(`Listening to http://${this.host}:${this.port}`);
         });
     }
 }

@@ -1,3 +1,5 @@
+import { log } from "console";
+
 import { registerSocketHandler, registerXhrHandler, send, startServer, unregisterSocketHandler } from "../index.js";
 
 
@@ -7,10 +9,10 @@ startServer({
     publicPaths: [
         ["/demo/client", "/"]
     ]
-})
+});
 
 registerXhrHandler("get", "/data/blob", (req, res, token) => {
-    console.log("received GET request for a data blob");
+    log("received GET request for a data blob");
     const data = {
         id: token,
         some: {
@@ -24,7 +26,7 @@ registerXhrHandler("get", "/data/blob", (req, res, token) => {
 });
 
 function handlePing (ws, data, uuid) {
-    console.log("received ping, sending pong");
+    log("received ping, sending pong");
     const response = {
         a: data.a,
         id: uuid

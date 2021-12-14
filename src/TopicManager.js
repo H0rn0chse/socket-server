@@ -1,3 +1,5 @@
+import { send } from "../index.js";
+
 /**
  * A platform unspecific manager for topics which allows subscribing
  * and publishing to a topic
@@ -8,6 +10,11 @@ export class TopicManager {
         this.users = new Map();
     }
 
+    /**
+     * Subscribes a WebSocket to a topic
+     * @param {WebSocket} ws
+     * @param {string} topic
+     */
     subscribe (ws, topic) {
         let topicUsers = this.topics.get(topic);
         if (topicUsers === undefined) {
@@ -24,6 +31,11 @@ export class TopicManager {
         userTopics.set(topic, topicUsers);
     }
 
+    /**
+     * Unsubscribes a WebSocket to a topic
+     * @param {WebSocket} ws
+     * @param {string} topic
+     */
     unsubscribe (ws, topic) {
         const userTopics = this.users.get(ws.id);
         if (userTopics) {
@@ -33,6 +45,10 @@ export class TopicManager {
         }
     }
 
+    /**
+     * Unsubscribes a WebSocket from all topics
+     * @param {WebSocket} ws
+     */
     unsubscribeAll (ws) {
         const userTopics = this.users.get(ws.id);
         if (userTopics) {
@@ -43,11 +59,17 @@ export class TopicManager {
         }
     }
 
-    publish (topic, message) {
+    /**
+     * Publishes a message to all websockets subscribed to a message
+     * @param {string} topic
+     * @param {string} channel
+     * @param {object} data
+     */
+    publish (topic, channel, data) {
         const topicUsers = this.topics.get(topic);
         if (topicUsers) {
             topicUsers.forEach((ws, id) => {
-                ws.send(message);
+                send(ws, channel, data);
             });
         }
     }
