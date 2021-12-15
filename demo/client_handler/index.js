@@ -1,4 +1,4 @@
-import { request, connect, send, registerSocketHandler } from "./socket-server/handler.js";
+import { request, setWebSocketOptions, send, registerSocketHandler } from "./socket-server/handler.js";
 
 request("GET", "/data/blob").then(console.log);
 

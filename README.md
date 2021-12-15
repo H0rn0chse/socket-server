@@ -30,10 +30,13 @@ registerSocketHandler("ping", (ws, data, uuid) => {
 });
 ```
 
-For more examples see the [documentation](https://github.com/H0rn0chse/socket-server/wiki) and the demo files [test.js](./demo/test.js) and [test_custom.js](./demo/test_custom.js).
+For more examples see the [documentation](https://github.com/H0rn0chse/socket-server/wiki) and the demo files:
+ * Basic Usage: [test.js](./demo/test.js)
+ * Client Handler: [test_handler.js](./demo/test_handler.js)
+ * Custom Adapter: [test_custom.js](./demo/test_custom.js)
 
 ### Limitations
-This module can only be used with esm.
+This module can only be used with esm modules.
 ```javascript
 // package.json
 {
