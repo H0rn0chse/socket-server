@@ -4,11 +4,11 @@ import path from "path";
 import { Adapter } from "./src/DefaultAdapter.js";
 import { AdapterBase as _AdapterBase } from "./src/AdapterBase.js";
 import { TopicManager as _TopicManager } from "./src/TopicManager.js";
-import { projectRoot, root as debugRoot } from "./src/root.js"
+import { projectRoot, root as packageRoot } from "./src/root.js"
 
 let port = parseInt(process.env.PORT, 10) || 8080;
 let host = process.env.PORT ? "0.0.0.0" : "localhost";
-const debug = !!process.env.npm_config_debug;
+const debug = !!process.env.npm_config_debugpackage;
 
 let publicPaths = [
     ["/client", "/"]
@@ -19,7 +19,7 @@ let root;
 if (!debug) {
     root = projectRoot;
 } else {
-    root = debugRoot;
+    root = packageRoot;
 }
 
 
@@ -72,15 +72,15 @@ export function startServer (options = {}) {
         useClientHandler = options.useClientHandler;
     }
 
-    if (useClientHandler) {
-        publicPaths.push(["/src/client", "/socket-server"]);
-        publicPaths.push(["/src/shared", "/socket-server"]);
-    }
-
     if (options.root !== false) {
         publicPaths = publicPaths.map((parts) => {
             return [path.join(root, parts[0]), parts[1]];
         });
+    }
+
+    if (useClientHandler) {
+        publicPaths.push([path.join(packageRoot, "/src/client"), "/socket-server"]);
+        publicPaths.push([path.join(packageRoot, "/src/shared"), "/socket-server"]);
     }
 
     adapter = new Adapter(port, host, publicPaths);
