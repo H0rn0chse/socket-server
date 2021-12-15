@@ -11,8 +11,9 @@ registerSocketHandler("pong", (data) => {
 });
 
 setWebSocketOptions({
-    keepAlive: 30 // 30 sec
+    keepAlive: 30, // 30 sec timeout
+    keepAlivePing: 10 // 10 sec ping
 });
+// => Timeout of the WebSocket after 3 Pings
 
 send("ping", { foo: "bar" });
-

@@ -2,7 +2,6 @@ import { log } from "console";
 
 import { registerSocketHandler, registerXhrHandler, send, startServer } from "../index.js";
 
-
 startServer({
     host: "localhost",
     port: 3000,

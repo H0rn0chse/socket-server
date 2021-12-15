@@ -4,15 +4,13 @@ import { request as _request } from "./request.js";
 
 /**
  * @callback socketCallback
- * @param {WebSocket} ws The WebsocketObject
  * @param {object} data The sent data
- * @param {number} uuid A uuid for the current socket
  */
 
+let token = crypto.randomUUID();
 const host = globalThis.location.origin.replace(/^http/, "ws");
-const token = crypto.randomUUID();
 const socketHandler = new HandlerMap(["channel", "callback", "scope"]);
-const closeHandler = new HandlerMap(["callback", "scope"]);
+const socketCloseHandler = new HandlerMap(["callback", "scope"]);
 
 /**
  * Sets the xhr token
@@ -30,7 +28,7 @@ export function setToken (newToken) {
  * @param {object} [body]
  * @returns {Promise<object>} Resolves  with the response of the server
  */
-export const request = function (method, path, header={}, body={}) {
+export function request (method, path, header={}, body={}) {
     if (!header.Authorization) {
         header.Authorization = token;
     }
@@ -43,7 +41,7 @@ export const request = function (method, path, header={}, body={}) {
  * @param {socketCallback} socketCallback
  * @param {object} [scope]
  */
-export async function registerSocketHandler (channel, socketCallback, scope=null) {
+export function registerSocketHandler (channel, socketCallback, scope=null) {
     socketHandler.set(channel, socketCallback, scope);
 }
 
@@ -53,7 +51,7 @@ export async function registerSocketHandler (channel, socketCallback, scope=null
  * @param {socketCallback} socketCallback
  * @param {object} [scope]
  */
-export async function unregisterSocketHandler (channel, socketCallback, scope=null) {
+export function unregisterSocketHandler (channel, socketCallback, scope=null) {
     socketHandler.delete(channel, socketCallback, scope);
 }
 
@@ -62,8 +60,8 @@ export async function unregisterSocketHandler (channel, socketCallback, scope=nu
  * @param {function} closeCallback
  * @param {object} [scope]
  */
-export async function attachClose (closeCallback, scope=null) {
-    closeHandler.set(closeCallback, scope);
+export function attachSocketClose (closeCallback, scope=null) {
+    socketCloseHandler.set(closeCallback, scope);
 }
 
 /**
@@ -71,14 +69,15 @@ export async function attachClose (closeCallback, scope=null) {
  * @param {function} closeCallback
  * @param {object} [scope]
  */
-export async function detachClose (closeCallback, scope=null) {
-    closeHandler.delete(closeCallback, scope);
+export function detachSocketClose (closeCallback, scope=null) {
+    socketCloseHandler.delete(closeCallback, scope);
 }
 
 let socketPromise, keepAlive;
-let KEEP_ALIVE_TIMEOUT = 5 * 60; // 5 mins
+const KEEP_ALIVE_TIMEOUT = 5 * 60; // 5 mins
 let keepAliveTimeout = KEEP_ALIVE_TIMEOUT;
 const PING_TIMEOUT = 30; // 30 sec;
+let keepAlivePingTimeout = PING_TIMEOUT;
 const keepAlivePing = send.bind(null, "keep-alive", {});
 
 /**
@@ -87,10 +86,12 @@ const keepAlivePing = send.bind(null, "keep-alive", {});
  * @param {object} options
  * @param {number} [options.keepAlive] default=300
  *      if set to false keepAlive is disabled
+ * @param {number} [options.keepAlivePing] default=30
  */
-export async function setWebSocketOptions (options) {
+export async function setWebSocketOptions (options={}) {
     // reset current options
     keepAliveTimeout = KEEP_ALIVE_TIMEOUT;
+    keepAlivePingTimeout = PING_TIMEOUT;
 
     if (socketPromise) {
         const socket = await socketPromise;
@@ -99,6 +100,9 @@ export async function setWebSocketOptions (options) {
 
     if (typeof options.keepAlive === "number" && options.keepAlive > 0) {
         keepAliveTimeout = options.keepAlive
+    }
+    if (typeof options.keepAlivePing === "number" && options.keepAlivePing > 0) {
+        keepAlivePingTimeout = options.keepAlivePing
     }
     if (options.keepAlive === false) {
         keepAliveTimeout = null
@@ -119,7 +123,7 @@ function getSocket () {
         const socket = new WebSocket(`${host}/ws`);
         socket.onopen = (evt) => {
             if (keepAliveTimeout) {
-                keepAlive = new KeepAlive(keepAlivePing, PING_TIMEOUT, keepAliveTimeout);
+                keepAlive = new KeepAlive(keepAlivePing, keepAlivePingTimeout, keepAliveTimeout);
             }
             resolve(socket);
         };
@@ -173,7 +177,7 @@ function handleSocketClose (evt) {
     keepAlive = null;
     socketPromise = null;
 
-    closeHandler.forEach((closeCallback, scope) => {
+    socketCloseHandler.forEach((closeCallback, scope) => {
         try {
             if (scope) {
                 closeCallback.call(scope);
