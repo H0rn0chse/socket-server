@@ -8,7 +8,7 @@ export class HandlerMap {
 
     _buildKey (valueList) {
         return this.signature.reduce((key, name, index) => {
-            key[name] = valueList[index]
+            key[name] = valueList[index];
             return key;
         }, {});
     }
@@ -16,7 +16,7 @@ export class HandlerMap {
     _getKey (searchKey) {
         return Array.from(this.handler.keys()).find((key) => {
             return equalKeyObjects(key, searchKey);
-        })
+        });
     }
 
     add (...values) {

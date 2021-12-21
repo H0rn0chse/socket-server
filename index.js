@@ -4,7 +4,7 @@ import path from "path";
 import { Adapter } from "./src/DefaultAdapter.js";
 import { AdapterBase as _AdapterBase } from "./src/AdapterBase.js";
 import { TopicManager as _TopicManager } from "./src/TopicManager.js";
-import { projectRoot, root as packageRoot } from "./src/root.js"
+import { projectRoot, root as packageRoot } from "./src/root.js";
 
 let port = parseInt(process.env.PORT, 10) || 8080;
 let host = process.env.PORT ? "0.0.0.0" : "localhost";
@@ -57,13 +57,13 @@ export function startServer (options = {}) {
         throw new Error("The adapter can only be set once!");
     }
     if (typeof options.port === "number") {
-        port = options.port
+        port = options.port;
     }
     if (typeof options.host === "string") {
-        host = options.host
+        host = options.host;
     }
     if (Array.isArray(options.publicPaths)) {
-        publicPaths = options.publicPaths
+        publicPaths = options.publicPaths;
     }
     if (typeof options.root === "string") {
         root = options.root;
@@ -118,7 +118,7 @@ export function registerSocketHandler (channel, socketCallback, scope=null) {
  * @param {socketCallback} socketCallback
  * @param {object} [scope]
  */
- export function unregisterSocketHandler (channel, socketCallback, scope=null) {
+export function unregisterSocketHandler (channel, socketCallback, scope=null) {
     if (!adapter) {
         return new Error("'unregisterSocketHandler' was called before the adapter was set");
     }
@@ -146,7 +146,7 @@ export function registerXhrHandler (method, path, xhrCallback, scope=null) {
  * @param {xhrCallback} xhrCallback
  * @param {object} [scope]
  */
- export function unregisterXhrHandler (method, path, xhrCallback, scope=null) {
+export function unregisterXhrHandler (method, path, xhrCallback, scope=null) {
     if (!adapter) {
         return new Error("'unregisterXhrHandler' was called before the adapter was set");
     }

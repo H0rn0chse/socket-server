@@ -99,13 +99,13 @@ export async function setWebSocketOptions (options={}) {
     }
 
     if (typeof options.keepAlive === "number" && options.keepAlive > 0) {
-        keepAliveTimeout = options.keepAlive
+        keepAliveTimeout = options.keepAlive;
     }
     if (typeof options.keepAlivePing === "number" && options.keepAlivePing > 0) {
-        keepAlivePingTimeout = options.keepAlivePing
+        keepAlivePingTimeout = options.keepAlivePing;
     }
     if (options.keepAlive === false) {
-        keepAliveTimeout = null
+        keepAliveTimeout = null;
     }
 
     await getSocket();
@@ -130,11 +130,11 @@ function getSocket () {
         socket.onerror = (evt) => {
             console.error("Could not connect the WebSocket");
             socketPromise = null;
-            reject()
+            reject();
         };
         socket.onmessage = handleSocketMessage;
         socket.onclose = handleSocketClose;
-    })
+    });
     return socketPromise;
 }
 
@@ -162,7 +162,7 @@ function handleSocketMessage (evt) {
                 socketCallback(message.data);
             }
         } catch (err) {
-            error(err);
+            console.error(err);
         }
     });
 }

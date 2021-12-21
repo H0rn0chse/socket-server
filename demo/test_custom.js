@@ -30,8 +30,8 @@ registerXhrHandler("get", "/data/blob", (req, res, token) => {
                 foo: "bar"
             }
         }
-    }
-    res.json(data)
+    };
+    res.json(data);
     res.end();
 });
 

@@ -23,17 +23,17 @@ const host = globalThis.location.origin.replace(/^http/, "ws");
 const ws = new WebSocket(`${host}/ws`);
 ws.onmessage = (evt) => {
     const message = JSON.parse(evt.data);
-    console.log("WebSocket data", message.channel, message.data)
+    console.log("WebSocket data", message.channel, message.data);
     if (message.channel === "pong") {
-        var data = {channel: "ping", data: { a: "b" }}
-        ws.send(JSON.stringify(data))
+        var data = {channel: "ping", data: { a: "b" }};
+        ws.send(JSON.stringify(data));
     }
 };
 ws.onopen = () => {
     console.log("WebSocket open");
 
-    var data = {channel: "ping", data: { a: "b" }}
-    ws.send(JSON.stringify(data))
+    var data = {channel: "ping", data: { a: "b" }};
+    ws.send(JSON.stringify(data));
 };
 ws.onclose = () => {
     console.error("close");

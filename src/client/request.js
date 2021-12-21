@@ -11,17 +11,15 @@ export function request (method, path, header, body) {
             resolve(data);
         });
         xhr.addEventListener("error", (evt) => {
-            debugger
             reject();
         });
         xhr.addEventListener("abort", ()  => {
-            debugger
             reject();
         });
 
         xhr.open(method, path, true);
 
-        xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+        xhr.setRequestHeader("Content-type", "application/json; charset=utf-8");
         Object.keys(header).forEach((function (key) {
             xhr.setRequestHeader(key, header[key]);
         }));
