@@ -1,4 +1,4 @@
-export function request (method, path, header, body) {
+export function request (method, path, header = {}, body) {
     return new Promise(function (resolve, reject) {
         const xhr = new XMLHttpRequest();
         xhr.addEventListener("load", () => {

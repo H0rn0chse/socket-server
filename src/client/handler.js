@@ -7,10 +7,47 @@ import { request as _request } from "./request.js";
  * @param {object} data The sent data
  */
 
-let token = crypto.randomUUID();
+let token = generateToken();
 const host = globalThis.location.origin.replace(/^http/, "ws");
 const socketHandler = new HandlerMap(["channel", "callback", "scope"]);
 const socketCloseHandler = new HandlerMap(["callback", "scope"]);
+
+function generateToken () {
+    // randomUUID is only available in secure context
+    // and is not available on Safari on IOS
+    if (typeof crypto.randomUUID === "function") {
+        return crypto.randomUUID();
+    }
+    const buffer = new Uint8Array(32);
+    crypto.getRandomValues(buffer);
+
+    let token = "";
+    // xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+    // 8-4-4-4-12 => 32
+    const separatorIndices = [8, 12, 16, 20];
+    buffer.forEach((int, index) => {
+        if (separatorIndices.includes(index)) {
+            token += "-";
+        }
+        token += getChar(int);
+    });
+
+    return token;
+}
+
+function getChar (int) {
+    const value = int % 36;
+    let charCode;
+    // 0-9 => 10 chars (48-57)
+    if (value < 10) {
+        charCode = value + 48;
+
+    // a-z => 26 chars (97-122)
+    } else {
+        charCode = (value - 10) + 97;
+    }
+    return String.fromCharCode(charCode);
+}
 
 /**
  * Sets the xhr token
@@ -18,6 +55,14 @@ const socketCloseHandler = new HandlerMap(["callback", "scope"]);
  */
 export function setToken (newToken) {
     token = newToken;
+}
+
+/**
+ * Returns the xhr token
+ * @returns The current token
+ */
+export function getToken () {
+    return token;
 }
 
 /**
