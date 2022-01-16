@@ -1,6 +1,6 @@
 {
   "name": "@h0rn0chse/socket-server",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "description": "Extends express.js and ws server with some utilities",
   "main": "index.js",
   "type": "module",
