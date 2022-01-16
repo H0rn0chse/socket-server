@@ -2,6 +2,11 @@ export function request (method, path, header = {}, body) {
     return new Promise(function (resolve, reject) {
         const xhr = new XMLHttpRequest();
         xhr.addEventListener("load", () => {
+            if (!xhr.status.toString().startsWith("2")) {
+                reject(xhr.responseText);
+                return;
+            }
+
             let data;
             try {
                 data = JSON.parse(xhr.responseText);
