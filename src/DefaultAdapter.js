@@ -11,6 +11,7 @@ export class Adapter extends AdapterBase {
         super(port, host, publicPaths);
 
         this.app = express();
+        this.app.use(express.json()); // for parsing application/json
         this.httpServer = createServer(this.app);
 
         const socketOptions = {
