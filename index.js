@@ -5,6 +5,7 @@ import { Adapter } from "./src/DefaultAdapter.js";
 import { AdapterBase as _AdapterBase } from "./src/AdapterBase.js";
 import { TopicManager as _TopicManager } from "./src/TopicManager.js";
 import { projectRoot, root as packageRoot } from "./src/root.js";
+import { Deferred } from "./src/shared/Deferred.js";
 
 let port = parseInt(process.env.PORT, 10) || 8080;
 let host = process.env.PORT ? "0.0.0.0" : "localhost";
@@ -24,6 +25,7 @@ if (!debug) {
 
 
 let adapter;
+const adapterDeferred = new Deferred();
 
 export const DefaultAdapter = Adapter;
 export const AdapterBase = _AdapterBase;
@@ -85,6 +87,7 @@ export function startServer (options = {}) {
 
     adapter = new Adapter(port, host, publicPaths);
     adapter.startServer();
+    adapterDeferred.resolve(adapter);
 }
 
 /**
@@ -97,6 +100,7 @@ export function startCustomServer (customAdapter) {
     }
     adapter = customAdapter;
     adapter.startServer();
+    adapterDeferred.resolve(adapter);
 }
 
 /**
@@ -105,10 +109,8 @@ export function startCustomServer (customAdapter) {
  * @param {socketCallback} socketCallback
  * @param {object} [scope]
  */
-export function registerSocketHandler (channel, socketCallback, scope=null) {
-    if (!adapter) {
-        return new Error("'registerSocketHandler' was called before the adapter was set");
-    }
+export async function registerSocketHandler (channel, socketCallback, scope=null) {
+    const adapter = await adapterDeferred.promise;
     adapter.registerSocketHandler(channel, socketCallback, scope);
 }
 
@@ -118,10 +120,8 @@ export function registerSocketHandler (channel, socketCallback, scope=null) {
  * @param {socketCallback} socketCallback
  * @param {object} [scope]
  */
-export function unregisterSocketHandler (channel, socketCallback, scope=null) {
-    if (!adapter) {
-        return new Error("'unregisterSocketHandler' was called before the adapter was set");
-    }
+export async function unregisterSocketHandler (channel, socketCallback, scope=null) {
+    const adapter = await adapterDeferred.promise;
     adapter.unregisterSocketHandler(channel, socketCallback, scope);
 }
 
@@ -132,10 +132,8 @@ export function unregisterSocketHandler (channel, socketCallback, scope=null) {
  * @param {xhrCallback} xhrCallback
  * @param {object} [scope]
  */
-export function registerXhrHandler (method, path, xhrCallback, scope=null) {
-    if (!adapter) {
-        return new Error("'registerXhrHandler' was called before the adapter was set");
-    }
+export async function registerXhrHandler (method, path, xhrCallback, scope=null) {
+    const adapter = await adapterDeferred.promise;
     adapter.registerXhrHandler(method, path, xhrCallback, scope);
 }
 
@@ -146,10 +144,8 @@ export function registerXhrHandler (method, path, xhrCallback, scope=null) {
  * @param {xhrCallback} xhrCallback
  * @param {object} [scope]
  */
-export function unregisterXhrHandler (method, path, xhrCallback, scope=null) {
-    if (!adapter) {
-        return new Error("'unregisterXhrHandler' was called before the adapter was set");
-    }
+export async function unregisterXhrHandler (method, path, xhrCallback, scope=null) {
+    const adapter = await adapterDeferred.promise;
     adapter.unregisterXhrHandler(method, path, xhrCallback, scope);
 }
 
@@ -159,10 +155,8 @@ export function unregisterXhrHandler (method, path, xhrCallback, scope=null) {
  * @param {string} channel
  * @param {object} data
  */
-export function publish (topic, channel, data) {
-    if (!adapter) {
-        return new Error("'publish' was called before the adapter was set");
-    }
+export async function publish (topic, channel, data) {
+    const adapter = await adapterDeferred.promise;
     adapter.publish(topic, channel, data);
 }
 
@@ -172,10 +166,8 @@ export function publish (topic, channel, data) {
  * @param {string} channel
  * @param {Object} data
  */
-export function send (ws, channel, data) {
-    if (!adapter) {
-        return new Error("'send' was called before the adapter was set");
-    }
+export async function send (ws, channel, data) {
+    const adapter = await adapterDeferred.promise;
     adapter.send(ws, channel, data);
 }
 
@@ -184,10 +176,8 @@ export function send (ws, channel, data) {
  * @param {WebSocket} ws
  * @param {string} topic
  */
-export function subscribe (ws, topic) {
-    if (!adapter) {
-        return new Error("'subscribe' was called before the adapter was set");
-    }
+export async function subscribe (ws, topic) {
+    const adapter = await adapterDeferred.promise;
     adapter.subscribe(ws, topic);
 }
 
@@ -196,9 +186,7 @@ export function subscribe (ws, topic) {
  * @param {WebSocket} ws
  * @param {string} topic
  */
-export function unsubscribe (ws, topic) {
-    if (!adapter) {
-        return new Error("'unsubscribe' was called before the adapter was set");
-    }
+export async function unsubscribe (ws, topic) {
+    const adapter = await adapterDeferred.promise;
     adapter.unsubscribe(ws, topic);
 }

@@ -3,14 +3,6 @@ import { log } from "console";
 import { registerSocketHandler, registerXhrHandler, send, startServer, unregisterSocketHandler } from "../index.js";
 
 
-startServer({
-    host: "localhost",
-    port: 3000,
-    publicPaths: [
-        ["/demo/client", "/"]
-    ]
-});
-
 registerXhrHandler("get", "/data/blob", (req, res, token) => {
     log("received GET request for a data blob");
     const data = {
@@ -36,3 +28,11 @@ function handlePing (ws, data, uuid) {
 }
 
 registerSocketHandler("ping", handlePing);
+
+startServer({
+    host: "localhost",
+    port: 3000,
+    publicPaths: [
+        ["/demo/client", "/"]
+    ]
+});
