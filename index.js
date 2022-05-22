@@ -155,8 +155,10 @@ export async function unregisterXhrHandler (method, path, xhrCallback, scope=nul
  * @param {string} channel
  * @param {object} data
  */
-export async function publish (topic, channel, data) {
-    const adapter = await adapterDeferred.promise;
+export function publish (topic, channel, data) {
+    if (!adapter) {
+        throw new Error("'publish' was called before the adapter was set");
+    }
     adapter.publish(topic, channel, data);
 }
 
@@ -166,8 +168,10 @@ export async function publish (topic, channel, data) {
  * @param {string} channel
  * @param {Object} data
  */
-export async function send (ws, channel, data) {
-    const adapter = await adapterDeferred.promise;
+export function send (ws, channel, data) {
+    if (!adapter) {
+        throw new Error("'send' was called before the adapter was set");
+    }
     adapter.send(ws, channel, data);
 }
 
@@ -176,8 +180,10 @@ export async function send (ws, channel, data) {
  * @param {WebSocket} ws
  * @param {string} topic
  */
-export async function subscribe (ws, topic) {
-    const adapter = await adapterDeferred.promise;
+export function subscribe (ws, topic) {
+    if (!adapter) {
+        throw new Error("'subscribe' was called before the adapter was set");
+    }
     adapter.subscribe(ws, topic);
 }
 
@@ -186,7 +192,9 @@ export async function subscribe (ws, topic) {
  * @param {WebSocket} ws
  * @param {string} topic
  */
-export async function unsubscribe (ws, topic) {
-    const adapter = await adapterDeferred.promise;
+export function unsubscribe (ws, topic) {
+    if (!adapter) {
+        throw new Error("'unsubscribe' was called before the adapter was set");
+    }
     adapter.unsubscribe(ws, topic);
 }
